@@ -2,42 +2,74 @@ from __future__ import with_statement
 
 import pytest
 
-class callback:
-    def __init__(self, *args, **kwargs):
-        if 'ret' in kwargs:
-            self.ret=kwargs['ret']
-            del kwargs['ret']
-        else:
-            self.ret=None
+def callback(*args, **kwargs):
+    if 'ret' in kwargs:
+        ret=kwargs['ret']
+        del kwargs['ret']
+    else:
+        ret=None
 
-        if 'callback' in kwargs:
-            self.callback = kwargs['callback']
-            del kwargs['callback']
-        else:
-            self.callback = None
+    if 'callback' in kwargs:
+        callback = kwargs['callback']
+        del kwargs['callback']
+    else:
+        callback = None
 
-        self.args=args
-        self.kwargs=kwargs
+    def testing(*testargs, **testkwargs):
+        assert(len(args)==len(testargs))
+        for i, n in enumerate(args):
+            if n != None:
+                assert(testargs[i]==n)
 
-    def __call__(self, *args, **kwargs):
-        assert(len(args)==len(self.args))
-        for i, n in enumerate(self.args):
-            assert(args[i]==n)
+        assert(len(kwargs)<=len(testkwargs))
+        for key, val in kwargs:
+            assert(key in testkwargs)
+            if val != None:
+                assert(testkwargs[key]==val)
 
-        assert(len(kwargs)>=len(self.kwargs))
-        for key, val in self.kwargs:
-            assert(key in kwargs and kwargs[key]==val)
+        if not callback:
+            return ret
 
-        if not self.callback:
-            return self.ret
+        if ret != None:
+            assert(ret == callback(*args, **kwargs))
+            return ret
 
-        if self.ret:
-            assert(self.ret == self.callback(*args, **kwargs))
-            return self.ret
+        return callback(*args, **kwargs)
 
-        return self.callback(*args, **kwargs)
+    return testing
 
 from storycheck.menue import menue
+
+class TestCallback:
+    def bad_example(*args, **kwargs):
+        assert(len(args)==5)
+        assert(len(kwargs)==4)
+        return 4
+
+    def __init__(self):
+        self.testcall1=callback(*range(5), This="that", There="Then", Blah=None, ret=4)
+        self.testcall2=callback(*range(5), This="that", There="Then", Blah=None)
+        self.testcall3=callback(This="that", There="Then", Blah=None, ret=4, callback=bad_example)
+        self.testcall4=callback()
+
+    def test_pos(self):
+        ret=self.testcall1(0,1,2,3,4,This="that", There="Then", Blah="Meh", Extra="null")
+        assert(ret==4)
+        ret=self.testcall2(0,1,2,3,4,This="that", There="Then", Blah="Meh", Extra="null")
+        assert(ret==None)
+        ret=self.testcall3(This="that", There="Then", Blah="Meh", Extra="null")
+        assert(ret==4)
+        ret=self.testcall4()
+        assert(ret==None)
+
+
+    def test_neg(self):
+        with pytest.raises(AssertionError):
+            self.testcall1(0,1,2,3,4)
+        with pytest.raises(AssertionError):
+            self.testcall1(0,1,2,3,4,This="that", There="Then", Extra="null")
+        with pytest.raises(AssertionError):
+            self.testcall1()
 
 class TestMenue:
     options=[callback(ret=k) for k in range(5)]
