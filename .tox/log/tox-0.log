@@ -1,0 +1,41 @@
+actionid=tox
+msg=packaging
+cmdargs=['/home/gammasq/Documents/projects/storycheck/venv/bin/python', local('/home/gammasq/Documents/projects/storycheck/setup.py'), 'sdist', '--formats=zip', '--dist-dir', local('/home/gammasq/Documents/projects/storycheck/.tox/dist')]
+env=None
+/usr/lib64/python2.7/distutils/dist.py:267: UserWarning: Unknown distribution option: 'include_package_data'
+  warnings.warn(msg)
+/usr/lib64/python2.7/distutils/dist.py:267: UserWarning: Unknown distribution option: 'install_requires'
+  warnings.warn(msg)
+running sdist
+running check
+warning: check: missing required meta-data: url
+
+warning: sdist: standard file not found: should have one of README, README.txt
+
+reading manifest template 'MANIFEST.in'
+warning: sdist: MANIFEST.in, line 1: 'recursive-include' expects <dir> <pattern1> <pattern2> ...
+
+warning: sdist: MANIFEST.in, line 2: 'recursive-include' expects <dir> <pattern1> <pattern2> ...
+
+warning: sdist: MANIFEST.in, line 3: 'recursive-include' expects <dir> <pattern1> <pattern2> ...
+
+writing manifest file 'MANIFEST'
+creating storycheck-0.1
+creating storycheck-0.1/engine
+creating storycheck-0.1/menue
+making hard links in storycheck-0.1...
+hard linking setup.py -> storycheck-0.1
+hard linking engine/__init__.py -> storycheck-0.1/engine
+hard linking engine/connections.py -> storycheck-0.1/engine
+hard linking engine/interactables.py -> storycheck-0.1/engine
+hard linking engine/knownledge.py -> storycheck-0.1/engine
+hard linking menue/__init__.py -> storycheck-0.1/menue
+creating '.tox/dist/storycheck-0.1.zip' and adding 'storycheck-0.1' to it
+adding 'storycheck-0.1/setup.py'
+adding 'storycheck-0.1/PKG-INFO'
+adding 'storycheck-0.1/engine/__init__.py'
+adding 'storycheck-0.1/engine/interactables.py'
+adding 'storycheck-0.1/engine/knownledge.py'
+adding 'storycheck-0.1/engine/connections.py'
+adding 'storycheck-0.1/menue/__init__.py'
+removing 'storycheck-0.1' (and everything under it)
