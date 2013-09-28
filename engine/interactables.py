@@ -1,11 +1,19 @@
 import inspect
 
-class interactible(object):
-    def __init__(self, piggyback=None):#, name, actions={}, reactions={}):
+def demo():
+    pass
+
+class democlass(object):
+    def demomethod():
+        pass
+
+class interactible_base(object):
+
+    def __init__(self, piggyback=None):
         if piggyback!=None:
             ref=piggyback
             try:
-                piggyback.__class__
+                pre=piggyback.__class__
                 self=piggyback
             except AttributeError:
                 self=piggyback()
@@ -18,17 +26,6 @@ class interactible(object):
         self.state_dict={}
         self.classtree=[]
         self.lvl=0
-
-        predic = dict(inspect.getmembers(ref, predicate=inspect.ismethod))
-        unneded = dict(inspect.getmembers(interactible, predicate=inspect.ismethod)).keys()
-        for key, val in predic.items():
-            if key in unneded:
-                continue
-            elif key.startswith("react_to_"):
-                reaction=key.split("react_to_")[-1]
-                self.reactions[reaction]=val
-            else:
-                self.actions[key]=val
 
         next = self.__class__
         while True:
@@ -46,17 +43,60 @@ class interactible(object):
         self.lvl = lvl +1
         return ret
 
+    def __setattr__(self, attr, ret):
+        if attr not in getattr(self, 'no_action',[attr]):
+            if attr.startswith("react_to_"):
+                reg = attr.split("react_to_")[-1]
+                self.reactions[reg]=ret
+            else:
+                if callable(ret):
+                    self.actions[attr]=ret
+        return super(interactible_base, self).__setattr__(attr, ret)
+
+    def __getattr__(self, attr):
+        if attr.startswith('__') or attr == 'no_action' or attr in getattr(self, 'no_action', [attr]):
+            return self.__getattribute__(attr)
+        elif attr in getattr(self, 'actions', []):
+            return self.act(attr)
+        elif attr.startswith('react_to_'):
+            react=attr.split('react_to_')[-1]
+            return self.react(react)
+
+        return self.__getattribute__(attr)
+
+    def act(self, action, **kwargs):
+        call=self.actions[action]
+
+
+class interactible(interactible_base):
+    no_action = dict(inspect.getmembers(interactible_base, predicate=inspect.ismethod)).keys()
+
+    def __init__(self, piggyback=None):#, name, actions={}, reactions={}):
+        super(interactible, self).__init__(piggyback)
+        predic = dict(inspect.getmembers(self, predicate=inspect.ismethod))
+        for key, val in predic.items():
+            if key in self.no_action:
+                continue
+            elif key.startswith("react_to_"):
+                reaction=key.split("react_to_")[-1]
+                self.reactions[reaction]=val
+            else:
+                self.actions[key]=val
+
     def act_on(self, action, **kwargs):
         # Call the saved callback:
         call = self.actions[action]
         args=inspect.getargspec(call)[0]
-        if 'target' in args and "target" in kwargs:
+        if ('target' in args and 'target' in kwargs) or ('target' not in args and 'target' not in kwargs):
             meta=call(**kwargs)
         else:
-            target=kwargs["target"]
-            del kwargs["target"]
-            meta=call(target, **kwargs)
-            kwargs['target']=target
+            try:
+                target=kwargs["target"]
+                del kwargs["target"]
+                meta=call(target, **kwargs)
+                kwargs['target']=target
+            except KeyError:
+                raise TypeError("'target' not specified!")
         # If we want to act on a specific target (e.g. OPEN the TREASSURE),
         # it's reaction will be called. target has to be interactible.
         if not meta:
