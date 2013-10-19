@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 import pytest
 
-from storycheck.tests import callback
+from storytracker.tests import callback
 
 @callback(*range(5), This="that", There="Then", Blah=None, ret=4)
 def bad_example(*args, **kwargs):

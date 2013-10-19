@@ -1,44 +1,43 @@
 from __future__ import with_statement
-from storycheck.tests import callback
-from storycheck.engine.interactables import interactible
+from storytracker.tests import callback
+from storytracker.engine.interactables import interactable
+from storytracker.engine.helper import act, react
 import pytest
 
 def scream(actor,*args):
     for n in args:
         print n
 
-def to_be_called(self, ball):
-    if ball.thrower in self.hated:
-        return 'hit', dict(chance=100, target=ball)
-    return 'hit', dict(chance=60, target=ball)
-
-class ball(interactible):
+class ball(interactable):
     def __init__(self, thrower):
         super(ball, self).__init__()
         self.thrower=thrower
         self.state('held')
 
-    def throw(me, target=None):
-        me.state("flying")
+    @act
+    def throw(self, target=None):
+        self.state("flying")
 
-    def react_to_hit(self, actor, mod=None):
+    @react
+    def hit(self, actor, mod=None):
         if self.state('flying'):
             self.state('hit', 50)
         else:
             self.state('hit', 0)
 
-class batter(interactible):
+class batter(interactable):
     def __init__(self, hated=[]):
         self.hated=hated
         super(batter, self).__init__()
 
+    @react
     @callback(None, ball)
-    def react_to_throw(self, ball):
+    def throw(self, ball):
         if ball.thrower in self.hated:
             return 'hit', dict(chance=100, target=ball)
         return 'hit', dict(chance=60, target=ball)
 
-
+    @act
     def hit(self, ball, chance):
         if chance > 70:
             return {}
@@ -57,7 +56,7 @@ ball1=ball("Nobody")
 ball2=ball("Bill")
 ball3=ball("Thomas")
 
-class TestInteractible_via_batter:
+class Testinteractable_via_batter:
 
     def test_state_pos(self):
         assert(ball1.state('held')==True)

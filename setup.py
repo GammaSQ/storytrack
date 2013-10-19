@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 
-PROJECT = "storycheck"
+PROJECT = "storytracker"
 VERSION = '0.1'
 AUTHOR = "GammaSQ"
 AUTHOR_EMAIL = "doesnt.work@gmxat"

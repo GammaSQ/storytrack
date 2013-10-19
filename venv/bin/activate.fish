@@ -32,7 +32,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/gammasq/Documents/projects/storycheck/venv"
+set -gx VIRTUAL_ENV "/home/gammasq/Documents/projects/storytracker/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

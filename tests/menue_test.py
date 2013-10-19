@@ -2,9 +2,9 @@ from __future__ import with_statement
 
 import pytest
 
-from storycheck.tests import callback
+from storytracker.tests import callback
 
-from storycheck.menue import menue
+from storytracker.menue import menue
 
 class TestMenue:
     options=[callback(ret=k)() for k in range(5)]
