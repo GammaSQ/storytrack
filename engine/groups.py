@@ -3,11 +3,23 @@ class Group_Base(object):
 
 class Group(Group_Base):
     def __init__(self):
-        events={}
-        members={}
+        self.events=set()
+        self.members=set()
+        self.hands=set()
 
-    def event(self, event):
-        for member in members.vals():
-            quer=member.handle(event):
-            if quer and quer == 'catch':
-                break
+    def handlers(self):
+        ret= self.hands.copy()
+        for mem in self.members:
+            ret |= mem.handlers()
+        return ret
+
+    def reg_event(self, event):
+        self.events.add(event)
+
+    def drop_event(self, event):
+        self.events.discard(event)
+
+    def join(self, mem):
+        self.members.add(mem)
+    def leave(self, mem):
+        self.members.remove(mem)

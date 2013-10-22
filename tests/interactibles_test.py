@@ -1,6 +1,6 @@
 from __future__ import with_statement
 from storytracker.tests import callback
-from storytracker.engine.interactables import interactable
+from storytracker.engine.interactables import Interactable
 from storytracker.engine.helper import act, react
 import pytest
 
@@ -8,7 +8,7 @@ def scream(actor,*args):
     for n in args:
         print n
 
-class ball(interactable):
+class ball(Interactable):
     def __init__(self, thrower):
         super(ball, self).__init__()
         self.thrower=thrower
@@ -25,7 +25,7 @@ class ball(interactable):
         else:
             self.state('hit', 0)
 
-class batter(interactable):
+class batter(Interactable):
     def __init__(self, hated=[]):
         self.hated=hated
         super(batter, self).__init__()
@@ -56,7 +56,7 @@ ball1=ball("Nobody")
 ball2=ball("Bill")
 ball3=ball("Thomas")
 
-class Testinteractable_via_batter:
+class TestInteractable_via_batter:
 
     def test_state_pos(self):
         assert(ball1.state('held')==True)

@@ -3,11 +3,11 @@ import pytest
 from storytracker.tests import callback
 
 from storytracker.engine import storyline
-from storytracker.engine.interactables import interactable
+from storytracker.engine.interactables import Interactable
 
 a = storyline()#timesteps=real/played/own
 
-Mitch=interactable()
+Mitch=Interactable()
 a.Mitch=Mitch
 
 class TestStoryline:

@@ -1,4 +1,4 @@
-from storytracker.engine.interactables import interactable
+from storytracker.engine.interactables import Interactable
 
 class storyline(object):
     #self.map=[]
@@ -10,12 +10,12 @@ class storyline(object):
             mapping={}
 
     def __setattr__(self, attr, ret):
-        if issubclass(type(ret), interactable):
+        if issubclass(type(ret), Interactable):
             ret.name=attr
         elif attr.startswith("__"):
             pass
         else:
-            ret=interactable(ret)
+            ret=Interactable(ret)
             ret.name=attr
         return super(storyline, self).__setattr__(attr, ret)
 
