@@ -7,10 +7,15 @@ class Group(Group_Base):
         self.members=set()
         self.hands=set()
 
-    def handlers(self):
-        ret= self.hands.copy()
-        for mem in self.members:
-            ret |= mem.handlers()
+    def handlers(self, base=None):
+        if base != None:
+            ret = self.hands
+            for mem in self.members:
+                ret |= mem.handlers(base)
+        else:
+            ret = self.hands.copy()
+            for mem in self.members:
+                ret |= mem.handlers()
         return ret
 
     def reg_event(self, event):

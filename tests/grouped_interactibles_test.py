@@ -37,6 +37,7 @@ A.collapse()
 B.collapse()
 B.join(Traitor)
 
+A.collapse()
 import pytest
 with pytest.raises(AssertionError):
     B.collapse()

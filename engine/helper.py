@@ -155,11 +155,10 @@ class Event(object):
                 raise err()
             ext_hand=self.instance.handlers
             if callable(ext_hand):
-                ext_handlers=ext_hand()
+                ext_handlers=self.handlers & ext_hand(self.handlers)
             else:
-                ext_handlers=ext_hand
-            for handler in self.handlers & ext_handlers:
-                assert(kwargs=={})
+                ext_handlers=self.handlers & ext_hand
+            for handler in ext_handlers:
                 hand = handler.handle(self, **kwargs)
                 if hand== "catch":
                     break

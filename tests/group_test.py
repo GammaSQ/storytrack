@@ -8,7 +8,11 @@ class Pax(object):
     def __init__(self, *args):
         self.handler=set(args)
 
-    def handlers(self):
+    def handlers(self, base=None):
+        if base != None:
+            ret = base & self.handler
+            assert len(ret) == len(self.handler)
+            return ret
         return self.handler
 
 room=Room()

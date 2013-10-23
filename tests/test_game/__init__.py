@@ -1,17 +1,25 @@
-class whitch (interactible):
-    no_action += ['say', 'scream']
-    def react_to_offer(self, actor, offer):
-        if offer.value > 2:
-            ret = menue()############
-            self.say("Yes yes, good choice!")
-            return ret
-        else:
-            self.screem("get away! that is worthless!")
+from storytracker.engine.interactibles import Interactible
+from storytracker.engine.groups import Group
+from storytracker.engine.helpers import React
 
-    #@no_action
-    def say(self, msg):
-        print msg
+class Human(Interactible):
+    def __init__(self):
+        self.state('alive')
+        return super(Human, self).__init__()
+    react=React()
+    @react.to
+    def kill(self, actor):
+        if self.ability < actor.ability:
+            self.ability -=1
+            return 'attack'
+        return 'die'
 
-    #@no_action
-    def screem(self, msg):
-        print msg.upper()
+    def attack(self, target):
+        target.kill
+
+
+Tom = Human()
+Steve=Human()
+Tom.attack(Steve)
+# Tom raises Event attack
+# Steve gets Event, Tom is a kwarg

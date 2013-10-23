@@ -21,9 +21,12 @@ class Interactable_Base(object):
             self.reactions=reactions.boring_handlers
             handlings|=reactions.handler_args
         actions = getattr(self, 'act', None)
+        #self.actions=set()
         if actions != None:
-            self.actions = actions.boring_handlers
             handlings|=actions.handler_args
+            for event in actions.boring_handlers:
+                type(sel).event = Event(event)
+                self.actions.add(self.event)
         def dummy(**kwargs):
             pass
         # all handlers want to call a function. They havent got one yet.
@@ -32,7 +35,6 @@ class Interactable_Base(object):
         for hand in handlings:
             #################### need to set as attribute, so we have different handlers!
             ########## since we need to set anyway, use it, to set the instance for our classmethod.
-            assert(callable(hand[0]))
             type(self).handler = Handler(*hand)
             tmp = self.handler
             tmp.set_instance()
@@ -43,7 +45,9 @@ class Interactable_Base(object):
                 return getattr(self, hint, dummy)(**kwargs)
             delattr(type(self),"handler")
 
-    def handlers(self):
+    def handlers(self, base=None):
+        if base != None:
+            return base & set(self.handlings)
         return set(self.handlings)
 
     def state(self, *args, **kwargs):
